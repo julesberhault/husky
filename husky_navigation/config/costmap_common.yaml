@@ -17,9 +17,9 @@ static:
     subscribe_to_updates: true
 
 obstacles_laser:
-    observation_sources: velodyne realsense
-    velodyne: {sensor_frame: velodyne, data_type: PointCloud2, topic: points, marking: true, clearing: true}
-    realsense: {sensor_frame: camera_realsense, data_type: PointCloud2, topic: realsense/depth/color/points, marking: true, clearing: true}
+    observation_sources: robosense zed
+    robosense: {sensor_frame: robosense, data_type: PointCloud2, topic: rs_points, marking: true, clearing: true}
+    zed: {sensor_frame: zed_node_camera_center, data_type: PointCloud2, topic: zed_node/point_cloud/cloud_registered, marking: true, clearing: true}
 
 
 inflation:

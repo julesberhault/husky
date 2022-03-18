@@ -47,14 +47,24 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="laser_ust10_rear_xyz"      default="$(optenv HUSKY_UST10_SECONDARY_XYZ -0.2206 0.0 0.00635)" />
   <xacro:arg name="laser_ust10_rear_rpy"      default="$(optenv HUSKY_UST10_SECONDARY_RPY 0 0 3.14159)" />
 
-  <xacro:arg name="laser_3d_enabled" default="$(optenv HUSKY_LASER_3D_ENABLED 1)" />
+  <xacro:arg name="laser_3d_enabled" default="$(optenv HUSKY_LASER_3D_ENABLED 0)" />
   <xacro:arg name="laser_3d_xyz" default="$(optenv HUSKY_LASER_3D_XYZ 0 0 0)" />
   <xacro:arg name="laser_3d_rpy" default="$(optenv HUSKY_LASER_3D_RPY 0 0 0)" />
 
-  <xacro:arg name="realsense_enabled" default="$(optenv HUSKY_REALSENSE_ENABLED 1)" />
+  <xacro:arg name="robosense_enabled" default="$(optenv HUSKY_ROBOSENSE_ENABLED 1)" />
+  <xacro:arg name="robosense_xyz" default="$(optenv HUSKY_ROBOSENSE_XYZ 0 0 0.08)" />
+  <xacro:arg name="robosense_rpy" default="$(optenv HUSKY_ROBOSENSE_RPY 0 0 0)" />
+
+  <xacro:arg name="realsense_enabled" default="$(optenv HUSKY_REALSENSE_ENABLED 0)" />
   <xacro:arg name="realsense_xyz" default="$(optenv HUSKY_REALSENSE_XYZ 0 0 0)" />
   <xacro:arg name="realsense_rpy" default="$(optenv HUSKY_REALSENSE_RPY 0 0 0)" />
   <xacro:arg name="realsense_mount" default="$(optenv HUSKY_REALSENSE_MOUNT_FRAME sensor_arch_mount_link)" />
+
+  <xacro:arg name="zed_enabled" default="$(optenv HUSKY_ZED_ENABLED 1)" />
+  <xacro:arg name="zed_xyz" default="$(optenv HUSKY_ZED_XYZ 0 0 0)" />
+  <xacro:arg name="zed_rpy" default="$(optenv HUSKY_ZED_RPY 0 0 0)" />
+  <xacro:arg name="zed_mount" default="$(optenv HUSKY_ZED_MOUNT_FRAME sensor_arch_mount_link)" />
+  <xacro:arg name="zed_model" default="$(optenv HUSKY_ZED_MODEL zed2)" />
 
   <xacro:property name="husky_front_bumper_extend" value="$(optenv HUSKY_FRONT_BUMPER_EXTEND 0)" />
   <xacro:property name="husky_rear_bumper_extend" value="$(optenv HUSKY_REAR_BUMPER_EXTEND 0)" />
@@ -72,10 +82,12 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:include filename="$(find husky_description)/urdf/wheel.urdf.xacro" />
 
   <xacro:include filename="$(find husky_description)/urdf/accessories/intel_realsense.urdf.xacro"/>
+  <xacro:include filename="$(find zed_wrapper)/urdf/zed_macro.urdf.xacro" />
   <xacro:include filename="$(find husky_description)/urdf/accessories/hokuyo_ust10.urdf.xacro" />
   <xacro:include filename="$(find husky_description)/urdf/accessories/sick_lms1xx_mount.urdf.xacro"/>
   <xacro:include filename="$(find husky_description)/urdf/accessories/sensor_arch.urdf.xacro"/>
   <xacro:include filename="$(find husky_description)/urdf/accessories/vlp16_mount.urdf.xacro"/>
+  <xacro:include filename="$(find robosense_description)/urdf/RS-16.urdf.xacro"/>
 
   <xacro:property name="M_PI" value="3.14159"/>
 
@@ -222,8 +234,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   -->
   <xacro:property name="sensorbar_user_enabled"     value="$(arg sensor_arch)" />
   <xacro:property name="sensorbar_needed_realsense" value="$(arg realsense_enabled)" />
+  <xacro:property name="sensorbar_needed_zed"       value="$(arg zed_enabled)" />
   <xacro:property name="sensorbar_needed_lidar"     value="$(arg laser_3d_enabled)" />
-  <xacro:if value="${sensorbar_needed_realsense or sensorbar_user_enabled or sensorbar_needed_lidar}">
+  <xacro:property name="sensorbar_needed_robosense" value="$(arg robosense_enabled)" />
+  <xacro:if value="${sensorbar_needed_realsense or sensorbar_needed_zed or sensorbar_user_enabled or sensorbar_needed_lidar or sensorbar_needed_robosense}">
     <xacro:sensor_arch prefix="" parent="top_plate_link" size="$(arg sensor_arch_height)">
         <origin xyz="$(optenv HUSKY_SENSOR_ARCH_OFFSET 0 0 0)" rpy="$(optenv HUSKY_SENSOR_ARCH_RPY 0 0 0)"/>
       </xacro:sensor_arch>
@@ -240,6 +254,21 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     <xacro:intel_realsense_mount prefix="camera" topic="realsense" parent_link="realsense_mountpoint"/>
   </xacro:if>
 
+  <!-- add the zed camera to the sensor arch if needed -->
+  <xacro:unless value="$(arg realsense_enabled)">
+    <xacro:if value="$(arg zed_enabled)">
+      <link name="zed_mountpoint"/>
+      <joint name="zed_mountpoint_joint" type="fixed">
+        <origin xyz="$(arg zed_xyz)" rpy="$(arg zed_rpy)" />
+        <parent link="$(arg zed_mount)"/>
+        <child link="zed_mountpoint" />
+      </joint>
+      <xacro:zed_camera name="zed_node" model="$(arg zed_model)" parent="zed_mountpoint">
+        <origin xyz="$(arg zed_xyz)" rpy="$(arg zed_rpy)" />
+      </xacro:zed_camera>
+    </xacro:if>
+  </xacro:unless>
+
   <!--
     Add the 3d laser to the sensor arch if needed
   -->
@@ -248,6 +277,17 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
       <origin xyz="$(arg laser_3d_xyz)" rpy="$(arg laser_3d_rpy)" />
     </xacro:vlp16_mount>
   </xacro:if>
+
+  <!--
+    Add the RoboSense 3D LiDAR to the sensor arch if needed
+  -->
+  <xacro:unless value="$(arg laser_3d_enabled)">
+    <xacro:if value="$(arg robosense_enabled)">
+      <xacro:RS-16 parent="sensor_arch_mount_link" name="robosense" topic="$(optenv HUSKY_ROBOSENSE_TOPIC rs_points)" hz="20" lasers="16" samples="900" collision_range="0.4" min_range="0.4" max_range="150.0" noise="0.008" gpu="true">
+        <origin xyz="$(arg robosense_xyz)" rpy="$(arg robosense_rpy)" />
+      </xacro:RS-16>
+    </xacro:if>
+  </xacro:unless>
 
   <gazebo>
     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
