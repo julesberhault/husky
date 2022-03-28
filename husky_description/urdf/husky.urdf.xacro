@@ -270,7 +270,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   </xacro:unless>
 
   <!--
-    Add the 3d laser to the sensor arch if needed
+    Add the Velodyne 3d laser to the sensor arch if needed
   -->
   <xacro:if value="$(arg laser_3d_enabled)">
     <xacro:vlp16_mount prefix="" parent_link="sensor_arch_mount_link" topic="$(optenv HUSKY_LASER_3D_TOPIC points)">
