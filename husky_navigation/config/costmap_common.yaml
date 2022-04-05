@@ -74,7 +74,7 @@ voxel_layer:
   robosense:
     sensor_frame: robosense
     data_type: PointCloud2
-    topic: /rs_points
+    topic: /rslidar_points
     expected_update_rate: 20.0
     max_obstacle_height: 1.1 # setted to 1.1 to fiter an false detection caused an error in the robosense lidar description when gpu flag is setted to true (default: 2.0)
     min_obstacle_height: 0.1
