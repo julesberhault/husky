@@ -30,7 +30,7 @@ obstacle_layer:
   robosense:
     sensor_frame: robosense
     data_type: PointCloud2
-    topic: /rs_points
+    topic: /rslidar_points
     expected_update_rate: 20.0
     obstacle_max_range: 2.5
     obstacle_min_range: 0.0
