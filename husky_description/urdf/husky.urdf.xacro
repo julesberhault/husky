@@ -52,7 +52,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="laser_3d_rpy" default="$(optenv HUSKY_LASER_3D_RPY 0 0 0)" />
 
   <xacro:arg name="robosense_enabled" default="$(optenv HUSKY_ROBOSENSE_ENABLED 1)" />
-  <xacro:arg name="robosense_xyz" default="$(optenv HUSKY_ROBOSENSE_XYZ 0 0 0.08)" />
+  <xacro:arg name="robosense_xyz" default="$(optenv HUSKY_ROBOSENSE_XYZ -0.02 0 0.006)" />
   <xacro:arg name="robosense_rpy" default="$(optenv HUSKY_ROBOSENSE_RPY 0 0 0)" />
 
   <xacro:arg name="realsense_enabled" default="$(optenv HUSKY_REALSENSE_ENABLED 0)" />
@@ -61,17 +61,19 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="realsense_mount" default="$(optenv HUSKY_REALSENSE_MOUNT_FRAME sensor_arch_mount_link)" />
 
   <xacro:arg name="zed_enabled" default="$(optenv HUSKY_ZED_ENABLED 1)" />
-  <xacro:arg name="zed_xyz" default="$(optenv HUSKY_ZED_XYZ 0 0 0)" />
-  <xacro:arg name="zed_rpy" default="$(optenv HUSKY_ZED_RPY 0 0 0)" />
+  <xacro:arg name="zed_xyz" default="$(optenv HUSKY_ZED_XYZ 0 0 -0.025)" />
+  <xacro:arg name="zed_rpy" default="$(optenv HUSKY_ZED_RPY 0 3.141593 0)" />
   <xacro:arg name="zed_mount" default="$(optenv HUSKY_ZED_MOUNT_FRAME sensor_arch_mount_link)" />
   <xacro:arg name="zed_model" default="$(optenv HUSKY_ZED_MODEL zed2)" />
 
   <xacro:property name="husky_front_bumper_extend" value="$(optenv HUSKY_FRONT_BUMPER_EXTEND 0)" />
   <xacro:property name="husky_rear_bumper_extend" value="$(optenv HUSKY_REAR_BUMPER_EXTEND 0)" />
 
-  <!-- Height of the sensor arch in mm.  Must be either 510 or 300 -->
-  <xacro:arg name="sensor_arch_height"  default="$(optenv HUSKY_SENSOR_ARCH_HEIGHT 510)" />
+  <!-- Height of the sensor arch in mm.  Must be either 540 or 510 or 300 -->
+  <xacro:arg name="sensor_arch_height"  default="$(optenv HUSKY_SENSOR_ARCH_HEIGHT 540)" />
   <xacro:arg name="sensor_arch"         default="$(optenv HUSKY_SENSOR_ARCH 0)" />
+  <xacro:arg name="sensor_arch_xyz"  default="$(optenv HUSKY_SENSOR_ARCH_OFFSET 0.01 0 0)" />
+  <xacro:arg name="sensor_arch_rpy"     default="$(optenv HUSKY_SENSOR_ARCH_RPY 0 0 0)" />
 
   <xacro:arg name="robot_namespace" default="$(optenv ROBOT_NAMESPACE /)" />
   <xacro:arg name="urdf_extras" default="$(optenv HUSKY_URDF_EXTRAS empty.urdf)" />
@@ -156,8 +158,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- Can be modified with environment variables in /etc/ros/setup.bash -->
   <link name="imu_link"/>
   <joint name="imu_joint" type="fixed">
-    <origin xyz="$(optenv HUSKY_IMU_XYZ 0.19 0 0.149)" rpy="$(optenv HUSKY_IMU_RPY 0 -1.5708 3.1416)" />
-    <parent link="base_link" />
+    <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.54)" rpy="$(optenv HUSKY_IMU_RPY 0 -1.5708 3.1416)" />
+    <parent link="sensor_arch_mount_link" />
     <child link="imu_link" />
   </joint>
   <gazebo reference="imu_link">
@@ -166,8 +168,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- GPS Link is the standard mounting position for the GPS-->
   <link name="gps_link"/>
   <joint name="gps_joint" type="fixed">
-    <origin xyz="$(optenv HUSKY_GPS_XYZ 0.0 0.0 0.5)" rpy="$(optenv HUSKY_GPS_RPY 0 0 0)" />
-    <parent link="base_link" />
+    <origin xyz="$(optenv HUSKY_GPS_XYZ -0.1 0 -0.27)" rpy="$(optenv HUSKY_GPS_RPY 0 0 0)" />
+    <parent link="sensor_arch_mount_link" />
     <child link="gps_link" />
   </joint>
   <gazebo reference="gps_link">
@@ -240,8 +242,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:property name="sensorbar_needed_robosense" value="$(arg robosense_enabled)" />
   <xacro:if value="${sensorbar_needed_realsense or sensorbar_needed_zed or sensorbar_user_enabled or sensorbar_needed_lidar or sensorbar_needed_robosense}">
     <xacro:sensor_arch prefix="" parent="top_plate_link" size="$(arg sensor_arch_height)">
-        <origin xyz="$(optenv HUSKY_SENSOR_ARCH_OFFSET 0 0 0)" rpy="$(optenv HUSKY_SENSOR_ARCH_RPY 0 0 0)"/>
-      </xacro:sensor_arch>
+    	<origin xyz="$(arg sensor_arch_xyz)" rpy="$(arg sensor_arch_rpy)"/>
+    </xacro:sensor_arch>
   </xacro:if>
 
   <!-- add the intel realsense to the sensor arch if needed -->
@@ -265,7 +267,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
         <child link="zed_mountpoint" />
       </joint>
       <xacro:zed_camera name="zed_node" model="$(arg zed_model)" parent="zed_mountpoint">
-        <origin xyz="$(arg zed_xyz)" rpy="$(arg zed_rpy)" />
+        <origin xyz="0 0 0" rpy="0 -0.05 0" />
       </xacro:zed_camera>
     </xacro:if>
   </xacro:unless>
@@ -284,8 +286,16 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   -->
   <xacro:unless value="$(arg laser_3d_enabled)">
     <xacro:if value="$(arg robosense_enabled)">
-      <xacro:RS-16 parent="sensor_arch_mount_link" name="robosense" topic="$(optenv HUSKY_ROBOSENSE_TOPIC rs_points)" hz="20" lasers="16" samples="900" collision_range="0.4" min_range="0.4" max_range="150.0" noise="0.008" gpu="true">
-        <origin xyz="$(arg robosense_xyz)" rpy="$(arg robosense_rpy)" />
+    
+	  <joint name="robosense_joint" type="fixed" >
+	    <parent link="sensor_arch_mount_link" />
+		<child link="robosense_mountpoint" />
+		<origin xyz="$(arg robosense_xyz)" rpy="$(arg robosense_rpy)" />
+	  </joint>
+	  <link name="robosense_mountpoint"/>
+	  
+      <xacro:RS-16 parent="robosense_mountpoint" name="robosense" topic="$(optenv HUSKY_ROBOSENSE_TOPIC rslidar_points)" hz="20" lasers="16" samples="900" collision_range="0.4" min_range="0.4" max_range="150.0" noise="0.008" gpu="true">
+        <origin xyz="0 0 0.008" rpy="0 0 0" />
       </xacro:RS-16>
     </xacro:if>
   </xacro:unless>
