@@ -48,6 +48,29 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <!--Teleop -->
     <include file="$(find husky_control)/launch/teleop.launch" />
+    
+    <!--GPS Receiver Reach+-->
+    <include file="$(find nmea_navsat_driver)/launch/nmea_serial_driver.launch">
+        <arg name="port" value="/dev/ttyGPS" />
+        <arg name="baud" value="115200" />
+    </include>
+    
+    <!--Lidar 3D Robosense-->
+    <include file="$(find rslidar_pointcloud)/launch/husky_rslidar.launch" />
+
+    <!--Camera 3D ZED-->
+    <include file="$(find zed_wrapper)/launch/zed_no_tf.launch" />
+
+    <!--IMU SBG-->
+	<node name="sbg_device" pkg="sbg_driver" type="sbg_device" output="screen">
+		<rosparam command="load" file="$(find husky_bringup)/config/sbg_device_uart_default.yaml" />
+	</node>
+
+    <!--Mission Manager-->
+    <node pkg="cohoma_mission_manager" type="cohoma_mission_manager_node" name="cohoma_mission_manager_node" />
+
+    <!--ROS Bridge Server-->
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
 
     <!-- Diagnostic Aggregator -->
     <node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator">
