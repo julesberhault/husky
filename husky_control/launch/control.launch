@@ -45,7 +45,7 @@
 
     <!-- GPS Odometry -->
     <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
-      <rosparam command="load" file="$(find husky_control)/config/navsat_transform_sim.yaml" />
+      <rosparam command="load" file="$(find husky_control)/config/navsat_transform.yaml" />
       <remap from="/odometry/filtered" to="/odometry/filtered_map" />
       <remap from="/gps/fix" to="/navsat/fix" />
       <remap from="/imu/data" to="/imu/data" />
