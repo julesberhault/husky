@@ -63,14 +63,20 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
     <!--IMU SBG-->
 	<node name="sbg_device" pkg="sbg_driver" type="sbg_device" output="screen">
-		<rosparam command="load" file="$(find husky_bringup)/config/sbg_device_uart_default.yaml" />
+		<rosparam command="load" file="$(find husky_bringup)/config/sbg_ellipse_D.yaml" />
 	</node>
+
+    <!--Move base-->
+    <include file="$(find husky_navigation)/launch/move_base_mapless_demo.launch" />
 
     <!--Mission Manager-->
     <node pkg="cohoma_mission_manager" type="cohoma_mission_manager_node" name="cohoma_mission_manager_node" />
 
     <!--ROS Bridge Server-->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+        <arg name="address" value="11.0.0.3" />
+        <arg name="port"    value="9090" />
+    </include>
 
     <!-- Diagnostic Aggregator -->
     <node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator">
