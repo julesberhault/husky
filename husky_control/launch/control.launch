@@ -50,10 +50,21 @@
       <remap from="/gps/fix" to="/navsat/fix" />
       <remap from="/imu/data" to="/imu/data" />
     </node>
-    <!-- </group> -->
+
+    <!-- Integrated GPS of SBG IMU Odometry -->
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_imu" clear_params="true" output="screen">
+      <rosparam command="load" file="$(find husky_control)/config/navsat_transform.yaml" />
+      <remap from="/odometry/filtered" to="/odometry/filtered_map" />
+      <remap from="/gps/fix" to="/imu/nav_sat_fix" />
+      <remap from="/imu/data" to="/imu/data" />
+      <remap from="/odometry/gps" to="/odometry/imu" />
+      <remap from="/gps/filtered" to="/imu/gps/filtered" />
+    </node>
   </group>
 
-  <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server" output="screen"/>
+  <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server" output="screen">
+    <param name="link_name" value="base_link" />
+  </node>
 
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
 

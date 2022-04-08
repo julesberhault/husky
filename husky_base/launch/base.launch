@@ -36,7 +36,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
             control_frequency: 10.0
             diagnostic_frequency: 1.0
 
-            max_acceleration: 3.0
+            max_acceleration: 1.0
             max_speed: 1.0
             wheel_diameter: 0.3302
             polling_timeout: 10.0
@@ -49,11 +49,12 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <!--Teleop -->
     <include file="$(find husky_control)/launch/teleop.launch" />
     
-    <!--GPS Receiver Reach+-->
-    <include file="$(find nmea_navsat_driver)/launch/nmea_serial_driver.launch">
-        <arg name="port" value="/dev/ttyGPS" />
-        <arg name="baud" value="115200" />
-    </include>
+    <!--GPS Receiver-->
+    <node pkg="nmea_navsat_driver" type="nmea_serial_driver" name="nmea_serial_driver">
+        <rosparam command="load" file="$(find husky_bringup)/config/gps_config.yaml" />
+        <remap from="/fix" to="/navsat/fix" />
+        <remap from="/vel" to="/navsat/vel" />
+    </node>
     
     <!--Lidar 3D Robosense-->
     <include file="$(find rslidar_pointcloud)/launch/husky_rslidar.launch" />
@@ -62,9 +63,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <include file="$(find zed_wrapper)/launch/zed_no_tf.launch" />
 
     <!--IMU SBG-->
-	<node name="sbg_device" pkg="sbg_driver" type="sbg_device" output="screen">
-		<rosparam command="load" file="$(find husky_bringup)/config/sbg_ellipse_D.yaml" />
-	</node>
+    <node name="sbg_device" pkg="sbg_driver" type="sbg_device" output="screen">
+        <rosparam command="load" file="$(find husky_bringup)/config/sbg_ellipse_D.yaml" />
+    </node>
 
     <!--Move base-->
     <include file="$(find husky_navigation)/launch/move_base_mapless_demo.launch" />
@@ -73,10 +74,9 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <node pkg="cohoma_mission_manager" type="cohoma_mission_manager_node" name="cohoma_mission_manager_node" />
 
     <!--ROS Bridge Server-->
-    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
-        <arg name="address" value="11.0.0.3" />
-        <arg name="port"    value="9090" />
-    </include>
+    <node pkg="rosbridge_server" type="rosbridge_websocket" name="rosbridge_websocket">
+        <rosparam command="load" file="$(find husky_bringup)/config/sbg_ellipse_D.yaml" />
+    </node>
 
     <!-- Diagnostic Aggregator -->
     <node pkg="diagnostic_aggregator" type="aggregator_node" name="diagnostic_aggregator">
