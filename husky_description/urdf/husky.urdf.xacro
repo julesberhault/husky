@@ -52,7 +52,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="laser_3d_rpy" default="$(optenv HUSKY_LASER_3D_RPY 0 0 0)" />
 
   <xacro:arg name="robosense_enabled" default="$(optenv HUSKY_ROBOSENSE_ENABLED 1)" />
-  <xacro:arg name="robosense_xyz" default="$(optenv HUSKY_ROBOSENSE_XYZ -0.02 0 0.006)" />
+  <xacro:arg name="robosense_xyz" default="$(optenv HUSKY_ROBOSENSE_XYZ 0 0 0.044)" />
   <xacro:arg name="robosense_rpy" default="$(optenv HUSKY_ROBOSENSE_RPY 0 0 0)" />
 
   <xacro:arg name="realsense_enabled" default="$(optenv HUSKY_REALSENSE_ENABLED 0)" />
@@ -61,8 +61,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="realsense_mount" default="$(optenv HUSKY_REALSENSE_MOUNT_FRAME sensor_arch_mount_link)" />
 
   <xacro:arg name="zed_enabled" default="$(optenv HUSKY_ZED_ENABLED 1)" />
-  <xacro:arg name="zed_xyz" default="$(optenv HUSKY_ZED_XYZ 0 0 -0.025)" />
-  <xacro:arg name="zed_rpy" default="$(optenv HUSKY_ZED_RPY 0 3.141593 0)" />
+  <xacro:arg name="zed_xyz" default="$(optenv HUSKY_ZED_XYZ 0 0 -0.265)" />
+  <xacro:arg name="zed_rpy" default="$(optenv HUSKY_ZED_RPY 0 0.05 0)" />
   <xacro:arg name="zed_mount" default="$(optenv HUSKY_ZED_MOUNT_FRAME sensor_arch_mount_link)" />
   <xacro:arg name="zed_model" default="$(optenv HUSKY_ZED_MODEL zed2)" />
 
@@ -157,7 +157,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- Can be modified with environment variables in /etc/ros/setup.bash -->
   <link name="imu_link"/>
   <joint name="imu_joint" type="fixed">
-    <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.54)" rpy="$(optenv HUSKY_IMU_RPY 0 -1.5708 3.1416)" />
+    <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.3)" rpy="$(optenv HUSKY_IMU_RPY 3.141593 0 0)" />
     <parent link="sensor_arch_mount_link" />
     <child link="imu_link" />
   </joint>
@@ -167,7 +167,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- GPS Link is the standard mounting position for the GPS-->
   <link name="gps_link"/>
   <joint name="gps_joint" type="fixed">
-    <origin xyz="$(optenv HUSKY_GPS_XYZ -0.1 0 -0.27)" rpy="$(optenv HUSKY_GPS_RPY 0 0 0)" />
+    <origin xyz="$(optenv HUSKY_GPS_XYZ 0 0.22 0)" rpy="$(optenv HUSKY_GPS_RPY 0 0 0)" />
     <parent link="sensor_arch_mount_link" />
     <child link="gps_link" />
   </joint>
@@ -265,8 +265,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
         <parent link="$(arg zed_mount)"/>
         <child link="zed_mountpoint" />
       </joint>
-      <xacro:zed_camera name="zed_node" model="$(arg zed_model)" parent="zed_mountpoint">
-        <origin xyz="0 0 0" rpy="0 -0.05 0" />
+      <xacro:zed_camera name="zed" model="$(arg zed_model)" parent="zed_mountpoint">
+        <origin xyz="0 0 0" rpy="0 0 0" />
       </xacro:zed_camera>
     </xacro:if>
   </xacro:unless>
@@ -286,14 +286,14 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:unless value="$(arg laser_3d_enabled)">
     <xacro:if value="$(arg robosense_enabled)">
     
-	  <joint name="robosense_joint" type="fixed" >
-	    <parent link="sensor_arch_mount_link" />
-		<child link="robosense_mountpoint" />
-		<origin xyz="$(arg robosense_xyz)" rpy="$(arg robosense_rpy)" />
-	  </joint>
-	  <link name="robosense_mountpoint"/>
-	  
-      <xacro:RS-16 parent="robosense_mountpoint" name="robosense" topic="$(optenv HUSKY_ROBOSENSE_TOPIC rslidar_points)" hz="20" lasers="16" samples="900" collision_range="0.4" min_range="0.4" max_range="150.0" noise="0.008" gpu="true">
+      <joint name="robosense_joint" type="fixed" >
+        <parent link="sensor_arch_mount_link" />
+        <child link="robosense_mountpoint" />
+        <origin xyz="$(arg robosense_xyz)" rpy="$(arg robosense_rpy)" />
+      </joint>
+      <link name="robosense_mountpoint"/>
+        
+      <xacro:RS-16 parent="robosense_mountpoint" name="rslidar" topic="$(optenv HUSKY_ROBOSENSE_TOPIC rslidar_points)" hz="20" lasers="16" samples="900" collision_range="0.4" min_range="0.4" max_range="150.0" noise="0.008" gpu="true">
         <origin xyz="0 0 0.008" rpy="0 0 0" />
       </xacro:RS-16>
     </xacro:if>
@@ -325,7 +325,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     <plugin name="gps_controller" filename="libhector_gazebo_ros_gps.so">
       <robotNamespace>$(arg robot_namespace)</robotNamespace>
       <updateRate>40.0</updateRate>
-      <bodyName>gps_link</bodyName>
+      <bodyName>base_link</bodyName>
       <frameId>gps_link</frameId>
       <topicName>navsat/fix</topicName>
       <velocityTopicName>navsat/vel</velocityTopicName>
