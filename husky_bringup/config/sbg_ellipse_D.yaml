@@ -16,16 +16,16 @@ driver:
 
 odometry:
     # Enable ROS odometry messages.
-    enable: false
+    enable: true
     # Publish odometry transforms.
-    publishTf: true
+    publishTf: false
     # Odometry frame IDs.
     odomFrameId: "odom"
     baseFrameId: "base_link"
     initFrameId: "map"
 
 # Configuration of the device with ROS.
-confWithRos: false
+confWithRos: true
 
 uartConf:
   # Port Name
@@ -45,17 +45,17 @@ uartConf:
 # Sensor Parameters
 sensorParameters:
   # Initial latitude (°)
-  initLat: 48.419727
+  initLat: 48.7113
   # Initial longitude (°)
-  initLong: -4.472119
+  initLong: 2.2177
   # Initial altitude (above WGS84 ellipsoid) (m)
   initAlt: 100.0
   # Year at startup
-  year: 2018
+  year: 2022
   # month in year at startup
-  month: 03
+  month: 04
   # day in month at startup
-  day: 10
+  day: 12
 
   # Montion profile ID
   # 1 GENERAL_PURPOSE Should be used as a default when other profiles do not apply
@@ -63,7 +63,7 @@ sensorParameters:
   # 3 MARINE          Used in marine and underwater applications
   # 4 AIRPLANE        For fixed wings aircraft
   # 5 HELICOPTER      For rotary wing aircraft
-  motionProfile: 1
+  motionProfile: 2
 
 # IMU_ALIGNMENT_LEVER_ARM
 imuAlignementLeverArm:
@@ -82,7 +82,7 @@ imuAlignementLeverArm:
   # 3 ALIGNMENT_RIGHT     IMU Axis is turned in vehicle's right direction
   # 4 ALIGNMENT_UP        IMU Axis is turned in vehicle's up direction
   # 5 ALIGNMENT_DOWN      IMU Axis is turned in vehicle's down direction
-  axisDirectionY: 3
+  axisDirectionY: 2
   # Residual roll error after axis alignment rad
   misRoll: 0
   # Residual pitch error after axis alignment rad
@@ -90,11 +90,11 @@ imuAlignementLeverArm:
   # Residual yaw error after axis alignment rad
   misYaw: 0
   # X Primary lever arm in IMU X axis (once IMU alignment is applied) m
-  leverArmX: 0
+  leverArmX: -0.09
   # Y Primary lever arm in IMU Y axis (once IMU alignment is applied) m
   leverArmY: 0
   # Z Primary lever arm in IMU Z axis (once IMU alignment is applied) m
-  leverArmZ: 0
+  leverArmZ: 0.38
 
 # AIDING_ASSIGNMENT
 # Note: GNSS1 module configuration can only be set to an external port on Ellipse-E version.
@@ -145,7 +145,7 @@ magnetometer:
     #     This calibration mode is only designed to be used when roll and pitch motions are less than ± 5°.
     #     To work correctly, the device should be rotated through at least a full circle.
     # 2 3D Tell the device to start a full 3D magnetic calibration procedure. The 3D magnetic calibration offers the best accuracy
-    mode: 2
+    mode: 1
 
     # 0 LOW_BW Use this parameter in case of strong magnetic noise during calibration.
     #     Motion during calibration is then limited to slow rotations.
@@ -172,7 +172,7 @@ gnss:
   #GNSS primary antenna lever arm in IMU Y axis (m)
   primaryLeverArmY: 0.14
   #GNSS primary antenna lever arm in IMU Z axis (m)
-  primaryLeverArmZ: 0.19
+  primaryLeverArmZ: 0.22
   #GNSS primary antenna precise. Set to true if the primary lever arm has been accurately entered and doesn't need online re-estimation.
   primaryLeverPrecise: true
 
@@ -181,7 +181,7 @@ gnss:
   #GNSS secondary antenna lever arm in IMU Y axis (m)
   secondaryLeverArmY: -0.14
   #GNSS secondary antenna lever arm in IMU Z axis (m)
-  secondaryLeverArmZ: 0.19
+  secondaryLeverArmZ: 0.22
 
   # Secondary antenna operating mode.
   # 1 The GNSS will be used in single antenna mode only and the secondary lever arm is not used.
@@ -212,11 +212,11 @@ odom:
   direction: 0
 
   # Odometer lever arm in IMU X axis (m)
-  leverArmX: 0
+  leverArmX: -0.09
   # Odometer lever arm in IMU Y axis (m)
   leverArmY: 0
   # Odometer lever arm in IMU Z axis (m)
-  leverArmZ: 0
+  leverArmZ: 0.48
 
   # Odometer rejection mode
   # 0 Measurement is not taken into account
@@ -263,7 +263,7 @@ output:
   #
   # true : ENU convention (X east, Y north, Z up)
   # false (default): NED convention (X north, Y east, Z down)
-  use_enu: false
+  use_enu: true
 
   # Frame ID:
   # Note: If the frame convention is NED so the default frame ID is (imu_link_ned)
@@ -273,11 +273,11 @@ output:
   # Status general, clock, com aiding, solution, heave
   log_status: 8
   # Includes IMU status, acc., gyro, temp delta speeds and delta angles values
-  log_imu_data: 8
+  log_imu_data: 4
   # Includes roll, pitch, yaw and their accuracies on each axis
   log_ekf_euler: 0
   # Includes the 4 quaternions values
-  log_ekf_quat: 8
+  log_ekf_quat: 4
   # Position and velocities in NED coordinates with the accuracies on each axis
   log_ekf_nav: 8
   # Heave, surge and sway and accelerations on each axis for up to 4 points
@@ -285,7 +285,7 @@ output:
   # Provides UTC time reference
   log_utc_time: 8
   # Magnetic data with associated accelerometer on each axis
-  log_mag: 8
+  log_mag: 4
   # Magnetometer calibration data (raw buffer)
   log_mag_calib: 0
   # GPS velocities from primary or secondary GPS receiver

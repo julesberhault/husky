@@ -1,0 +1,9 @@
+model: "RS16"
+device_ip: "192.168.1.200"
+msop_port: 6699
+difop_port: 7788
+cut_angle: 0 #If set at [0, 360), cut at specific angle feature activated, otherwise use the fixed packets number mode.
+max_distance: 20
+min_distance: 0.4
+resolution_type: "0.5cm"
+intensity_mode: 1

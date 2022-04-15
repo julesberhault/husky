@@ -57,10 +57,24 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     </node>
     
     <!--Lidar 3D Robosense-->
-    <include file="$(find rslidar_pointcloud)/launch/husky_rslidar.launch" />
+    <!--<include file="$(find rslidar_pointcloud)/launch/husky_rslidar.launch" />-->
+    
+    <node name="rslidar_node" pkg="rslidar_driver" type="rslidar_node">
+        <rosparam command="load" file="$(find husky_bringup)/config/rslidar_16_config.yaml" />
+    </node>
+    
+    <node name="rscloud_node" pkg="rslidar_pointcloud" type="rscloud_node" output="screen" >
+        <rosparam command="load" file="$(find husky_bringup)/config/rslidar_16_config.yaml" />
+        <param name="curves_path" value="$(find husky_bringup)/config/rs_lidar_16/curves.csv" />
+        <param name="angle_path" value="$(find husky_bringup)/config/rs_lidar_16/angle.csv" />
+        <param name="channel_path" value="$(find husky_bringup)/config/rs_lidar_16/ChannelNum.csv" />
+    </node>
 
     <!--Camera 3D ZED-->
-    <include file="$(find zed_wrapper)/launch/zed_no_tf.launch" />
+    <!--<include file="$(find zed_wrapper)/launch/zed_no_tf.launch" />-->
+    <node name="zed_node" pkg="zed_wrapper" type="zed_wrapper_node">
+        <rosparam command="load" file="$(find husky_bringup)/config/zed2_camera_config.yaml" />
+    </node>
 
     <!--IMU SBG-->
     <node name="sbg_device" pkg="sbg_driver" type="sbg_device" output="screen">

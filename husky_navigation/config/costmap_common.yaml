@@ -28,7 +28,7 @@ obstacle_layer:
   combination_method: 1
   observation_sources: robosense
   robosense:
-    sensor_frame: robosense
+    sensor_frame: rslidar
     data_type: PointCloud2
     topic: /rslidar_points
     expected_update_rate: 20.0
@@ -72,7 +72,7 @@ voxel_layer:
   observation_sources: robosense zed
   combination_method: 1
   robosense:
-    sensor_frame: robosense
+    sensor_frame: rslidar
     data_type: PointCloud2
     topic: /rslidar_points
     expected_update_rate: 20.0
