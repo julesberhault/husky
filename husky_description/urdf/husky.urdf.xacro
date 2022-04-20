@@ -157,7 +157,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <!-- Can be modified with environment variables in /etc/ros/setup.bash -->
   <link name="imu_link"/>
   <joint name="imu_joint" type="fixed">
-    <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.3)" rpy="$(optenv HUSKY_IMU_RPY 3.141593 0 0)" />
+    <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.3)" rpy="$(optenv HUSKY_IMU_RPY 0 0 0)" />
     <parent link="sensor_arch_mount_link" />
     <child link="imu_link" />
   </joint>
@@ -306,11 +306,12 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
     </plugin>
   </gazebo>
 
+  <!--
   <gazebo>
     <plugin name="imu_controller" filename="libhector_gazebo_ros_imu.so">
       <robotNamespace>$(arg robot_namespace)</robotNamespace>
       <updateRate>50.0</updateRate>
-      <bodyName>base_link</bodyName>
+      <bodyName>imu_link</bodyName>
       <topicName>imu/data</topicName>
       <accelDrift>0.005 0.005 0.005</accelDrift>
       <accelGaussianNoise>0.005 0.005 0.005</accelGaussianNoise>
@@ -320,12 +321,51 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
       <headingGaussianNoise>0.005</headingGaussianNoise>
     </plugin>
   </gazebo>
+  -->
+    
+  <gazebo reference="imu_link">
+    <gravity>true</gravity>
+    <sensor name="imu_sensor" type="imu">
+      <always_on>true</always_on>
+      <update_rate>100</update_rate>
+      <visualize>true</visualize>
+      <topic>__default_topic__</topic>
+      <plugin filename="libgazebo_ros_imu_sensor.so" name="imu_plugin">
+        <topicName>imu/data</topicName>
+        <bodyName>imu_link</bodyName>
+        <updateRateHZ>50.0</updateRateHZ>
+        <gaussianNoise>0.0</gaussianNoise>
+        <xyzOffset>0 0 0</xyzOffset>
+        <rpyOffset>0 0 0</rpyOffset>
+        <frameName>imu_link</frameName>
+        <initialOrientationAsReference>false</initialOrientationAsReference>
+      </plugin>
+      <pose>0 0 0 0 0 0</pose>
+    </sensor>
+  </gazebo>
+
+  <gazebo reference="imu_link">
+    <plugin name="magnetometer_controller" filename="libhector_gazebo_ros_magnetic.so">
+      <alwaysOn>true</alwaysOn>
+      <updateRate>50.0</updateRate>
+      <bodyName>imu_link</bodyName>
+      <topicName>imu/mag</topicName>
+      <offset>0 0 0</offset>
+      <drift>0.0 0.0 0.0</drift>
+      <gaussianNoise>0.0 0.0 0.0</gaussianNoise>
+      <declination>1.433</declination>
+      <inclination>64.233</inclination>
+      <magnitude>0.0000482567</magnitude>
+      <referenceHeading>0</referenceHeading>
+      <useMagneticFieldMsgs>true</useMagneticFieldMsgs>
+    </plugin>
+  </gazebo>
 
   <gazebo>
     <plugin name="gps_controller" filename="libhector_gazebo_ros_gps.so">
       <robotNamespace>$(arg robot_namespace)</robotNamespace>
-      <updateRate>40.0</updateRate>
-      <bodyName>base_link</bodyName>
+      <updateRate>10.0</updateRate>
+      <bodyName>gps_link</bodyName>
       <frameId>gps_link</frameId>
       <topicName>navsat/fix</topicName>
       <velocityTopicName>navsat/vel</velocityTopicName>
