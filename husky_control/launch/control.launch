@@ -5,6 +5,7 @@
   <arg name="simulation" default="$(optenv ROBOT_SIMULATION false)"/>
   <arg name="robot_namespace" default="$(optenv ROBOT_NAMESPACE robot)"/>
   <arg name="enable_ekf" default="$(optenv ENABLE_EKF true)"/>
+  <arg name="husky_sim" default="$(optenv HUSKY_SIM false)"/>
 
   <arg name="config_extras"
        default="$(eval optenv('HUSKY_CONFIG_EXTRAS', find('husky_control') + '/config/empty.yaml'))"/>
@@ -44,22 +45,44 @@
     </node>
 
     <!-- GPS Odometry -->
-    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
-      <rosparam command="load" file="$(find husky_control)/config/navsat_transform.yaml" />
-      <remap from="/odometry/filtered" to="/odometry/filtered_map" />
-      <remap from="/gps/fix" to="/navsat/fix" />
-      <remap from="/imu/data" to="/imu/data" />
-    </node>
-
+    <group if="$(arg husky_sim)" >
+      <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
+        <rosparam command="load" file="$(find husky_control)/config/navsat_transform_sim.yaml" />
+        <remap from="/odometry/filtered" to="/odometry/filtered_map" />
+        <remap from="/gps/fix" to="/navsat/fix" />
+        <remap from="/imu/data" to="/imu/data" />
+      </node>
+    </group>
+    <group unless="$(arg husky_sim)" >
+      <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
+        <rosparam command="load" file="$(find husky_control)/config/navsat_transform_sim.yaml" />
+        <remap from="/odometry/filtered" to="/odometry/filtered_map" />
+        <remap from="/gps/fix" to="/navsat/fix" />
+        <remap from="/imu/data" to="/imu/data" />
+      </node>
+    </group>
+    
     <!-- Integrated GPS of SBG IMU Odometry -->
-    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_imu" clear_params="true" output="screen">
-      <rosparam command="load" file="$(find husky_control)/config/navsat_transform.yaml" />
-      <remap from="/odometry/filtered" to="/odometry/filtered_map" />
-      <remap from="/gps/fix" to="/imu/nav_sat_fix" />
-      <remap from="/imu/data" to="/imu/data" />
-      <remap from="/odometry/gps" to="/odometry/imu" />
-      <remap from="/gps/filtered" to="/imu/gps/filtered" />
-    </node>
+    <group if="$(arg husky_sim)" >
+      <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_imu" clear_params="true" output="screen">
+        <rosparam command="load" file="$(find husky_control)/config/navsat_transform.yaml" />
+        <remap from="/odometry/filtered" to="/odometry/filtered_map" />
+        <remap from="/gps/fix" to="/imu/nav_sat_fix" />
+        <remap from="/imu/data" to="/imu/data" />
+        <remap from="/odometry/gps" to="/odometry/imu" />
+        <remap from="/gps/filtered" to="/imu/gps/filtered" />
+      </node>
+    </group>
+    <group unless="$(arg husky_sim)" >
+      <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform_imu" clear_params="true" output="screen">
+        <rosparam command="load" file="$(find husky_control)/config/navsat_transform.yaml" />
+        <remap from="/odometry/filtered" to="/odometry/filtered_map" />
+        <remap from="/gps/fix" to="/imu/nav_sat_fix" />
+        <remap from="/imu/data" to="/imu/data" />
+        <remap from="/odometry/gps" to="/odometry/imu" />
+        <remap from="/gps/filtered" to="/imu/gps/filtered" />
+      </node>
+    </group>
   </group>
 
   <node pkg="interactive_marker_twist_server" type="marker_server" name="twist_marker_server" output="screen">
