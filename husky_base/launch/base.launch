@@ -85,7 +85,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <include file="$(find husky_navigation)/launch/move_base_mapless_demo.launch" />
 
     <!--Mission Manager-->
-    <node pkg="cohoma_mission_manager" type="cohoma_mission_manager_node" name="cohoma_mission_manager_node" />
+    <node pkg="mission_manager" type="mission_manager_node" name="mission_manager_node" />
 
     <!--ROS Bridge Server-->
     <node pkg="rosbridge_server" type="rosbridge_websocket" name="rosbridge_websocket">
