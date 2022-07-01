@@ -1,9 +1,10 @@
 frequency: 40
-delay: 3.0
+delay: 2.0
 magnetic_declination_radians: 0.0
 yaw_offset: 1.5707963
-zero_altitude: true
-broadcast_cartesian_transform: true
+zero_altitude: false
+broadcast_cartesian_transform: false
 publish_filtered_gps: true
 use_odometry_yaw: false
 wait_for_datum: false
+#datum: [48.711252, 2.217757, 0, "map", "base_link"]

@@ -16,7 +16,7 @@ driver:
 
 odometry:
     # Enable ROS odometry messages.
-    enable: true
+    enable: false
     # Publish odometry transforms.
     publishTf: false
     # Odometry frame IDs.
@@ -94,7 +94,7 @@ imuAlignementLeverArm:
   # Y Primary lever arm in IMU Y axis (once IMU alignment is applied) m
   leverArmY: 0
   # Z Primary lever arm in IMU Z axis (once IMU alignment is applied) m
-  leverArmZ: 0.38
+  leverArmZ: 0.43
 
 # AIDING_ASSIGNMENT
 # Note: GNSS1 module configuration can only be set to an external port on Ellipse-E version.
@@ -145,7 +145,7 @@ magnetometer:
     #     This calibration mode is only designed to be used when roll and pitch motions are less than ± 5°.
     #     To work correctly, the device should be rotated through at least a full circle.
     # 2 3D Tell the device to start a full 3D magnetic calibration procedure. The 3D magnetic calibration offers the best accuracy
-    mode: 1
+    mode: 3
 
     # 0 LOW_BW Use this parameter in case of strong magnetic noise during calibration.
     #     Motion during calibration is then limited to slow rotations.
@@ -168,20 +168,20 @@ gnss:
   gnss_model_id: 107
 
   #GNSS primary antenna lever arm in IMU X axis (m)
-  primaryLeverArmX: -0.35
+  primaryLeverArmX: 0.0
   #GNSS primary antenna lever arm in IMU Y axis (m)
-  primaryLeverArmY: 0.14
+  primaryLeverArmY: 0.26
   #GNSS primary antenna lever arm in IMU Z axis (m)
-  primaryLeverArmZ: 0.22
+  primaryLeverArmZ: -0.40
   #GNSS primary antenna precise. Set to true if the primary lever arm has been accurately entered and doesn't need online re-estimation.
   primaryLeverPrecise: true
 
   #GNSS secondary antenna lever arm in IMU X axis (m)
-  secondaryLeverArmX: -0.35
+  secondaryLeverArmX: 0.0
   #GNSS secondary antenna lever arm in IMU Y axis (m)
-  secondaryLeverArmY: -0.14
+  secondaryLeverArmY: -0.26
   #GNSS secondary antenna lever arm in IMU Z axis (m)
-  secondaryLeverArmZ: 0.22
+  secondaryLeverArmZ: -0.40
 
   # Secondary antenna operating mode.
   # 1 The GNSS will be used in single antenna mode only and the secondary lever arm is not used.
@@ -194,11 +194,11 @@ gnss:
   # 0 Measurement is not taken into account
   # 1 Measurement is rejected if inconsistent with current estimate (depending on error model)
   # 2 Measurement is always accepted
-  posRejectMode: 2
+  posRejectMode: 1
   # Rejection mode for velocity (see posRejectMode values)
-  velRejectMode: 2
+  velRejectMode: 1
   # Rejection mode for true heading (see posRejectMode values)
-  hdtRejectMode: 2
+  hdtRejectMode: 1
 
 # Odometer configuration
 odom:
@@ -216,7 +216,7 @@ odom:
   # Odometer lever arm in IMU Y axis (m)
   leverArmY: 0
   # Odometer lever arm in IMU Z axis (m)
-  leverArmZ: 0.48
+  leverArmZ: 0.43
 
   # Odometer rejection mode
   # 0 Measurement is not taken into account
@@ -271,15 +271,15 @@ output:
   frame_id: "imu_link"
 
   # Status general, clock, com aiding, solution, heave
-  log_status: 8
+  log_status: 200
   # Includes IMU status, acc., gyro, temp delta speeds and delta angles values
   log_imu_data: 4
   # Includes roll, pitch, yaw and their accuracies on each axis
-  log_ekf_euler: 0
+  log_ekf_euler: 4
   # Includes the 4 quaternions values
   log_ekf_quat: 4
   # Position and velocities in NED coordinates with the accuracies on each axis
-  log_ekf_nav: 8
+  log_ekf_nav: 0
   # Heave, surge and sway and accelerations on each axis for up to 4 points
   log_ship_motion: 0
   # Provides UTC time reference
@@ -287,7 +287,7 @@ output:
   # Magnetic data with associated accelerometer on each axis
   log_mag: 4
   # Magnetometer calibration data (raw buffer)
-  log_mag_calib: 0
+  log_mag_calib: 4
   # GPS velocities from primary or secondary GPS receiver
   log_gps1_vel: 10001
   # GPS positions from primary or secondary GPS receiver
@@ -306,4 +306,4 @@ output:
   # Air data
   log_air_data: 0
   # Short IMU data
-  log_imu_short: 0
+  log_imu_short: 4
