@@ -1,7 +1,7 @@
 frequency: 40
 delay: 2.0
-magnetic_declination_radians: 0.01745
-yaw_offset: 1.570963
+magnetic_declination_radians: 0.0 # 0.02618
+yaw_offset: 0.0 # 1.570963
 zero_altitude: false
 broadcast_cartesian_transform: false
 publish_filtered_gps: true

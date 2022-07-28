@@ -7,4 +7,4 @@ broadcast_cartesian_transform: false
 publish_filtered_gps: true
 use_odometry_yaw: false
 wait_for_datum: false
-#datum: [48.711252, 2.217757, 0, "map", "base_link"]
+# datum: [48.711252, 2.217757, 0, "map", "base_link"]

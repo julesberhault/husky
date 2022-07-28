@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- rosbag recorder (comment to save storage). Is called through a bash script to make it flexible -->
+    <node pkg="rosbag_recorder" type="rosbag_rania.sh" name="rosbag_rania" output="screen"/>
+</launch>
