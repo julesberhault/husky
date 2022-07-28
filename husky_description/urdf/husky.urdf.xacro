@@ -54,7 +54,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="laser_3d_rpy" default="$(optenv HUSKY_LASER_3D_RPY 0 0 0)" />
 
   <xacro:arg name="robosense_enabled" default="$(optenv HUSKY_ROBOSENSE_ENABLED 1)" />
-  <xacro:arg name="robosense_xyz" default="$(optenv HUSKY_ROBOSENSE_XYZ 0.017 0 -0.135)" />
+  <xacro:arg name="robosense_xyz" default="$(optenv HUSKY_ROBOSENSE_XYZ 0 0 -0.33)" />
   <xacro:arg name="robosense_rpy" default="$(optenv HUSKY_ROBOSENSE_RPY 0 0 0)" />
 
   <xacro:arg name="realsense_enabled" default="$(optenv HUSKY_REALSENSE_ENABLED 0)" />
@@ -63,16 +63,16 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <xacro:arg name="realsense_mount" default="$(optenv HUSKY_REALSENSE_MOUNT_FRAME sensor_arch_mount_link)" />
 
   <xacro:arg name="zed_enabled" default="$(optenv HUSKY_ZED_ENABLED 1)" />
-  <xacro:arg name="zed_xyz" default="$(optenv HUSKY_ZED_XYZ 0 0 -0.265)" />
-  <xacro:arg name="zed_rpy" default="$(optenv HUSKY_ZED_RPY 0 0.05 0)" />
+  <xacro:arg name="zed_xyz" default="$(optenv HUSKY_ZED_XYZ 0 0 -0.18)" />
+  <xacro:arg name="zed_rpy" default="$(optenv HUSKY_ZED_RPY 0 0.197 0)" />
   <xacro:arg name="zed_mount" default="$(optenv HUSKY_ZED_MOUNT_FRAME sensor_arch_mount_link)" />
   <xacro:arg name="zed_model" default="$(optenv HUSKY_ZED_MODEL zed2)" />
 
   <xacro:property name="husky_front_bumper_extend" value="$(optenv HUSKY_FRONT_BUMPER_EXTEND 0)" />
   <xacro:property name="husky_rear_bumper_extend" value="$(optenv HUSKY_REAR_BUMPER_EXTEND 0)" />
 
-  <!-- Height of the sensor arch in mm.  Must be either 540 or 510 or 300 -->
-  <xacro:arg name="sensor_arch_height"  default="$(optenv HUSKY_SENSOR_ARCH_HEIGHT 540)" />
+  <!-- Height of the sensor arch in mm.  Must be either 560 or 540 or 510 or 300 -->
+  <xacro:arg name="sensor_arch_height"  default="$(optenv HUSKY_SENSOR_ARCH_HEIGHT 560)" />
   <xacro:arg name="sensor_arch"         default="$(optenv HUSKY_SENSOR_ARCH 0)" />
   <xacro:arg name="sensor_arch_xyz"  default="$(optenv HUSKY_SENSOR_ARCH_OFFSET 0.01 0 0)" />
   <xacro:arg name="sensor_arch_rpy"     default="$(optenv HUSKY_SENSOR_ARCH_RPY 0 0 0)" />
@@ -164,14 +164,14 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <link name="imu_link"/>
   <xacro:if value="$(arg husky_sim)">
     <joint name="imu_joint" type="fixed">
-      <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.3)" rpy="$(optenv HUSKY_IMU_RPY 0 -1.5708 3.1416)" />
+      <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.38)" rpy="$(optenv HUSKY_IMU_RPY 0 0 0)" />
       <parent link="sensor_arch_mount_link" />
       <child link="imu_link" />
     </joint>
   </xacro:if>
   <xacro:unless value="$(arg husky_sim)">
     <joint name="imu_joint" type="fixed">
-      <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.3)" rpy="$(optenv HUSKY_IMU_RPY 0 0 0)" />
+      <origin xyz="$(optenv HUSKY_IMU_XYZ 0 0 -0.38)" rpy="$(optenv HUSKY_IMU_RPY 0 0 0)" />
       <parent link="sensor_arch_mount_link" />
       <child link="imu_link" />
     </joint>
@@ -179,10 +179,24 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
   <gazebo reference="imu_link">
   </gazebo>
 
+  <!-- GNSS Links is the standard mounting position for the SBG IMU dual GNSS-->
+  <link name="left_imu_gnss_link"/>
+  <joint name="left_imu_gnss_joint" type="fixed">
+    <origin xyz="0 0.25 0.01" rpy="0 0 0" />
+    <parent link="sensor_arch_mount_link" />
+    <child link="left_imu_gnss_link" />
+  </joint>
+  <link name="right_imu_gnss_link"/>
+  <joint name="right_imu_gnss_joint" type="fixed">
+    <origin xyz="0 -0.25 0.01" rpy="0 0 0" />
+    <parent link="sensor_arch_mount_link" />
+    <child link="right_imu_gnss_link" />
+  </joint>
+
   <!-- GPS Link is the standard mounting position for the GPS-->
   <link name="gps_link"/>
   <joint name="gps_joint" type="fixed">
-    <origin xyz="$(optenv HUSKY_GPS_XYZ 0 0.22 0)" rpy="$(optenv HUSKY_GPS_RPY 0 0 0)" />
+    <origin xyz="$(optenv HUSKY_GPS_XYZ 0 0.2 0.01)" rpy="$(optenv HUSKY_GPS_RPY 0 0 0)" />
     <parent link="sensor_arch_mount_link" />
     <child link="gps_link" />
   </joint>

@@ -1,0 +1,10 @@
+port: 8888
+address : "0.0.0.0"
+server_threads: 1
+ros_threads: 2
+pubish_rate: -1
+width: 640
+heigth: 480 
+invert: false
+default_transport: "raw"
+type: "png"

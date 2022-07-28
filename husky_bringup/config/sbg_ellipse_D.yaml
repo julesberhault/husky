@@ -90,7 +90,7 @@ imuAlignementLeverArm:
   # Residual yaw error after axis alignment rad
   misYaw: 0
   # X Primary lever arm in IMU X axis (once IMU alignment is applied) m
-  leverArmX: -0.09
+  leverArmX: -0.10
   # Y Primary lever arm in IMU Y axis (once IMU alignment is applied) m
   leverArmY: 0
   # Z Primary lever arm in IMU Z axis (once IMU alignment is applied) m
