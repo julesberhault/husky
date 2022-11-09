@@ -2,9 +2,9 @@
 <!--
 Software License Agreement (BSD)
 
-\file      decorations.urdf.xacro
-\authors   Paul Bovbel <pbovbel@clearpathrobotics.com>, Devon Ash <dash@clearpathrobotics.com>
-\copyright Copyright (c) 2015, Clearpath Robotics, Inc., All rights reserved.
+File      decorations.urdf.xacro
+Authors   Paul Bovbel <pbovbel@clearpathrobotics.com>, Devon Ash <dash@clearpathrobotics.com>
+Copyright Copyright (c) 2015, Clearpath Robotics, Inc., All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that
 the following conditions are met:
